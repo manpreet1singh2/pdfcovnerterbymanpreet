@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { convertPdfToDocx, isPdf, MAX_FILE_SIZE, safeName } from '@/lib/conversion'
 
 export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+export const maxDuration = 60
 
 export async function POST(request: Request) {
   try {
