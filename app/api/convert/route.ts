@@ -18,6 +18,8 @@ export async function POST(request: Request) {
       output = await convertPdfToDocx(buffer)
     } catch (error) {
       if (error instanceof Error && error.message === 'SCANNED_PDF') return NextResponse.json({ error: 'This looks like a scanned PDF. OCR is not enabled yet, so we could not find editable text.' }, { status: 422 })
+      if (error instanceof Error && /password|encrypted/i.test(error.message)) return NextResponse.json({ error: 'This PDF is password-protected. Remove the password and try again.' }, { status: 422 })
+      if (error instanceof Error && /invalid|format|corrupt|unexpected end/i.test(error.message)) return NextResponse.json({ error: 'This PDF appears to be damaged or unsupported. Please export it again and retry.' }, { status: 422 })
       throw error
     }
     const filename = `${safeName(entry.name.replace(/\.pdf$/i, ''))}.docx`
